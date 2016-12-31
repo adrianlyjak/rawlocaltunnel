@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var client = require('../lib/client');
 
 var argv = require('yargs')
