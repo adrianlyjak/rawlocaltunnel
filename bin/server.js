@@ -1,0 +1,28 @@
+const server = require('../lib/server');
+
+const argv = require('yargs')
+    .usage('Usage: $0 --port [num] <options>')
+    .option('s', {
+        alias: 'serverApiPort',
+        describe: 'api port to listen on',
+        default: 3000
+    })
+    .option('v', {
+      alias: 'verbosity',
+      describe: 'log verbosity [trace|debug|info|warn|error',
+      default: 'info'
+    })
+    .help('help', 'Show this help and exit')
+    .version(require('../package').version)
+    .argv;
+
+if (typeof argv.serverApiPort !== 'number') {
+    require('yargs').showHelp();
+    console.error('serverApiPort must be a number');
+    process.exit(1);
+} else {
+  server({
+    listenPort: argv.serverApiPort,
+    logLevel: argv.verbosity,
+  })
+}

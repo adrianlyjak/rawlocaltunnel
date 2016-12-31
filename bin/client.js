@@ -1,0 +1,40 @@
+var client = require('../lib/client');
+
+var argv = require('yargs')
+    .usage('Usage: $0 --port [num] <options>')
+    .option('p', {
+        alias: 'port',
+        describe: 'Internal http server port',
+    })
+    .require('port')
+    .option('h', {
+        alias: 'host',
+        describe: 'Upstream server providing forwarding',
+        default: 'localhost'
+    })
+    .option('l', {
+        alias: 'localhost',
+        describe: 'Tunnel traffic to this host instead of localhost',
+        default: 'localhost'
+    })
+    .option('s', {
+      alias: 'serverApiPort',
+      descripe: 'Port server API listens on',
+      default: 3000
+    })
+    .help('help', 'Show this help and exit')
+    .version(require('../package').version)
+    .argv;
+
+if (typeof argv.port !== 'number') {
+    require('yargs').showHelp();
+    console.error('port must be a number');
+    process.exit(1);
+} else {
+  client({
+    remoteHostname: argv.host,
+    localPort: argv.port,
+    remoteApiPort: argv.serverApiPort,
+    localHostname: argv.localhost,
+  })
+}
