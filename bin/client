@@ -21,8 +21,12 @@ var argv = require('yargs')
     })
     .option('s', {
       alias: 'serverApiPort',
-      descripe: 'Port server API listens on',
+      describe: 'Port server API listens on',
       default: 3000
+    })
+    .option('v', {
+      alias: 'verbosity',
+      describe: 'Log level'
     })
     .help('help', 'Show this help and exit')
     .version(require('../package').version)
@@ -35,6 +39,7 @@ if (typeof argv.port !== 'number') {
 } else {
   client({
     remoteHostname: argv.host,
+    logLevel: argv.verbosity,
     localPort: argv.port,
     remoteApiPort: argv.serverApiPort,
     localHostname: argv.localhost,
