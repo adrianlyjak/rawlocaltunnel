@@ -2,7 +2,7 @@
   "author": "Adrian Lyjak <adrian.lyjak@gmail.com>",
   "name": "rawlocaltunnel",
   "description": "expose raw localhost sockets to the world",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "repository": {
     "type": "git",
     "url": "git://github.com/adrianlyjak/rawlocaltunnel.git"
