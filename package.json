@@ -2,7 +2,7 @@
   "author": "Adrian Lyjak <adrian.lyjak@gmail.com>",
   "name": "rawlocaltunnel",
   "description": "expose raw localhost sockets to the world",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "repository": {
     "type": "git",
     "url": "git://github.com/adrianlyjak/rawlocaltunnel.git"
@@ -18,11 +18,11 @@
   },
   "dependencies": {
     "loglevel": "^1.4.1",
-    "should": "^11.1.2",
     "yargs": "^6.6.0"
   },
   "devDependencies": {
     "mocha": "^3.2.0",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "should": "^11.1.2"
   }
 }
