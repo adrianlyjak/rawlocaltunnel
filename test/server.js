@@ -21,14 +21,17 @@ function KillSwitch() {
 }
 
 function withConnection(cb) {
-  const killSwitch = KillSwitch();
   const emitter = fetchRemotePorts({
     hostname: '127.0.0.1',
     port: 3001
   })
-  new Promise((ok, nope) => emitter.once('open', ok))
-  .then(response => cb(response))
-  .then(x => emitter.quit())
+  return new Promise((ok, nope) => emitter.once('open', ok))
+  .then(response => {
+    return cb(response)
+  })
+  .then(x => {
+    emitter.quit()
+  })
   .catch(ex => {
     emitter.quit();
     throw ex;
@@ -59,7 +62,11 @@ const connectTimes = times => ports => {
 
 }
 
-const once = type => socket => new Promise((resolve, reject) => socket.once(type, resolve));
+const once = type => socket => new Promise((resolve, reject) => {
+  socket.once(type, (x) => {
+    resolve(x)
+  })
+});
 const onceData = once('data');
 
 
@@ -68,12 +75,16 @@ describe('Server', () => {
     let app = null;
 
     before(() => {
-      return createApp({ listenPort: 3001, logLevel: 'error' }).then(_app => {
+      return createApp({ listenPort: 3001, logLevel: 'warn' }).then(_app => {
         app = _app;
       })
     });
 
-    after((done) => app.close(done));
+    after((done) => {
+      app.close(() => {
+        done()
+      })
+    });
 
     it('should return two random ports', () => {
 
@@ -93,7 +104,6 @@ describe('Server', () => {
 
     it('should send data both ways', () => {
       return withSockets(([a, b]) => {
-        console.log('withcSockets');
         a.write('1');
         return onceData(b).then(data => {
           data.should.be.equal('1');
@@ -115,14 +125,13 @@ describe('Server', () => {
         })
         .then(([a1, b1, a2, b2]) => {
 
-          a1.write('a1')
-          b1.write('b1')
-          a2.write('a2')
-          b2.write('b2')
+          a1.write('a1');
+          b1.write('b1');
+          a2.write('a2');
+          b2.write('b2');
           return Promise.all([onceData(a1), onceData(b1), onceData(a2), onceData(b2)])
         })
         .then(([ab1, ba1, ab2, ba2]) => {
-
           ab1.should.be.equal('b1');
           ba1.should.be.equal('a1');
           ab2.should.be.equal('b2');
@@ -163,6 +172,7 @@ describe('Server', () => {
             return Promise.all(sockets.map((x, i) => {
               x.write(bytes)
               return onceData(x).then(data => {
+
                 x.destroy();
                 return data;
               });
